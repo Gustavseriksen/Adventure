@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class UserInterface {
@@ -18,35 +19,65 @@ public class UserInterface {
 
         // Udskriver introduktion til spillet og instruktioner til spilleren
         System.out.println("Welcome to Adventure \nthis is a text based game… a bit about how the game works… ");
-        System.out.println("“You are starting in the room called room1 and you have the following options: \n1. Type \"go north\": then you will go north \n2. Type \"go east\": then you will go east \n3. Type \"go south\": then you will go south \n4. Type \"go west\": then you will go west \n5. Type \"exit\": then you will exit the game \n6. Type \"help\": then you will get the following options \n7. Type \"look\": then you will get a description of what you can see in the room");
+        System.out.println("You are starting in a " + adventure.getPlayer().getCurrentRoom().getDescription()); // Udskriver beskrivelsen af det nuværende rum
+        printItemsInRoom(adventure.getPlayer().getCurrentRoom()); // Udskriver items, ét pr. linje
+        System.out.println(getHelpDescription()); // Udskriver hjælpemenuen
 
         // Hovedloopet for spillet, kører indtil running bliver sat til false
         while (running) {
             System.out.println("Type a command to perform an action: ");
             input = scanner.nextLine().toLowerCase(); // // Læser brugerens input og gør det til småt
 
+            // Splitter inputtet op i kommando og eventuelt item-navn
+            String[] inputParts = input.split(" ");
+            String command = inputParts[0];
+            String itemName;
+            if (inputParts.length > 1) {
+                // Hvis der er mere end én del i inputParts, henter vi den anden del (item-navnet)
+                itemName = inputParts[1];
+            } else {
+                // Hvis der kun er én del, sættes itemName til en tom streng
+                itemName = "";
+            }
+
             // Switch-statement der håndterer brugerens input
-            switch (input) {
-                case "go north":
-                    goNorth(); // Spilleren bevæger sig nord
-                    break;
-                case "go east":
-                    goEast(); // Spilleren bevæger sig øst
-                    break;
-                case "go south":
-                    goSouth(); // Spilleren bevæger sig syd
-                    break;
-                case "go west":
-                    goWest(); // Spilleren bevæger sig vest
+            switch (command) {
+                case "go":
+                    switch (itemName) { // Tjek retningen for "go"
+                        case "north":
+                            goNorth(); // Spilleren bevæger sig nord
+                            break;
+                        case "east":
+                            goEast(); // Spilleren bevæger sig øst
+                            break;
+                        case "south":
+                            goSouth(); // Spilleren bevæger sig syd
+                            break;
+                        case "west":
+                            goWest(); // Spilleren bevæger sig vest
+                            break;
+                        default:
+                            System.out.println("Invalid direction, try again");
+                            break;
+                    }
                     break;
                 case "exit":
                     exit(); // Afslutter spillet
                     break;
                 case "help":
-                    help(); // Viser hjælpemenuen
+                    System.out.println(getHelpDescription()); // Viser hjælpemenuen
                     break;
                 case "look":
                     look(); // Viser beskrivelsen af nuværende rum
+                    break;
+                case "take":
+                    handleTakeCommand(itemName); // Kalder metoden for at "take" et item
+                    break;
+                case "inventory":
+                    showInventory();
+                    break;
+                case "drop":
+                    handleDropCommand(itemName); // Kalder metoden for at "drop" et item
                     break;
                 default:
                     ukendtKommando(); // Håndterer ukendt kommando
@@ -55,18 +86,27 @@ public class UserInterface {
         }
     }
 
-    // Metode til at udskrive en besked i terminalen
-    public void printBesked(String besked) {
-        System.out.println(besked);
+
+    // Hjælpefunktion til at udskrive items i rummet, én pr. linje
+    private void printItemsInRoom(Room room) {
+        if (room.getItems().isEmpty()) {
+            System.out.println("There are no items in this room.");
+        } else {
+            System.out.println("Items in this room:");
+            for (Item item : room.getItems()) {
+                System.out.println("- " + item.getLongName());
+            }
+        }
     }
 
     // Spilleren forsøger at bevæge sig nord
     private void goNorth() {
         // Tjekker om spilleren kan bevæge sig nord og opdaterer positionen
         if (adventure.getPlayer().moveNorth()) {
-            printBesked("You are now in " + adventure.getPlayer().getCurrentRoom().getName());
+            System.out.println("You are now in a " + adventure.getPlayer().getCurrentRoom().getDescription());
+            printItemsInRoom(adventure.getPlayer().getCurrentRoom()); // Udskriver items, ét pr. linje
         } else {
-            printBesked("You cannot go that way.");
+            System.out.println("You cannot go that way.");
         }
     }
 
@@ -74,9 +114,10 @@ public class UserInterface {
     private void goEast() {
         // Tjekker om spilleren kan bevæge sig øst og opdaterer positionen
         if (adventure.getPlayer().moveEast()) {
-            printBesked("You are now in " + adventure.getPlayer().getCurrentRoom().getName());
+            System.out.println("You are now in a " + adventure.getPlayer().getCurrentRoom().getDescription());
+            printItemsInRoom(adventure.getPlayer().getCurrentRoom()); // Udskriver items, ét pr. linje
         } else {
-            printBesked("You cannot go that way.");
+            System.out.println("You cannot go that way.");
         }
     }
 
@@ -84,9 +125,10 @@ public class UserInterface {
     private void goSouth() {
         // Tjekker om spilleren kan bevæge sig syd og opdaterer positionen
         if (adventure.getPlayer().moveSouth()) {
-            printBesked("You are now in " + adventure.getPlayer().getCurrentRoom().getName());
+            System.out.println("You are now in a " + adventure.getPlayer().getCurrentRoom().getDescription());
+            printItemsInRoom(adventure.getPlayer().getCurrentRoom()); // Udskriver items, ét pr. linje
         } else {
-            printBesked("You cannot go that way.");
+            System.out.println("You cannot go that way.");
         }
     }
 
@@ -94,30 +136,95 @@ public class UserInterface {
     private void goWest() {
         // Tjekker om spilleren kan bevæge sig vest og opdaterer positionen
         if (adventure.getPlayer().moveWest()) {
-            printBesked("You are now in " + adventure.getPlayer().getCurrentRoom().getName());
+            System.out.println("You are now in a " + adventure.getPlayer().getCurrentRoom().getDescription());
+            printItemsInRoom(adventure.getPlayer().getCurrentRoom()); // Udskriver items, ét pr. linje
         } else {
-            printBesked("You cannot go that way.");
+            System.out.println("You cannot go that way.");
         }
     }
 
     // Afslutter spillet
     private void exit() {
-        printBesked("Exiting program");
+        System.out.println("Exiting program");
         running = false; // Dette vil stoppe while-loopet og afslutte programmet
     }
 
     // Viser hjælpemenuen
-    private void help() {
-        printBesked("You have the following options: \n1. Type \"go north\": then you will go north \n2. Type \"go east\": then you will go east \n3. Type \"go south\": then you will go south \n4. Type \"go west\": then you will go west \n5. Type \"exit\": then you will exit the game \n6. Type \"help\": then you will get the following options \n7. Type \"look\": then you will get a description of what you can see in the room");
+    private String getHelpDescription() {
+        return "You have the following options: \n" +
+                "1. Type \"go north\": then you will go north \n" +
+                "2. Type \"go east\": then you will go east \n" +
+                "3. Type \"go south\": then you will go south \n" +
+                "4. Type \"go west\": then you will go west \n" +
+                "5. Type \"exit\": then you will exit the game \n" +
+                "6. Type \"help\": then you will get the following options \n" +
+                "7. Type \"look\": then you will get a description of what you can see in the room \n" +
+                "8. Type \"take itemName\": then you will take the following item and put it in your inventory \n" +
+                "9. Type \"inventory\": then you will get a list of what you have in your inventory \n" +
+                "10. Type \"drop itemName\": then you gonna drop the following item in the room";
     }
 
     // Viser beskrivelsen af det nuværende rum
     private void look() {
-        printBesked(adventure.getPlayer().getCurrentRoom().getDescription());
+        System.out.println(adventure.getPlayer().getCurrentRoom().getDescription());
+        printItemsInRoom(adventure.getPlayer().getCurrentRoom()); // Udskriver items, ét pr. linje
     }
+
+    // Metode til at håndtere 'take' kommandoen
+    public void handleTakeCommand(String itemName) {
+        // Finder item i det nuværende rum
+        Item item = adventure.getPlayer().getCurrentRoom().findItem(itemName);
+
+        if (item != null) {
+            // Fjerner item fra rummet
+            adventure.getPlayer().getCurrentRoom().removeItem(item);
+
+            // Tilføjer item til spillerens inventory
+            adventure.getPlayer().takeItem(item);
+
+            // Giv feedback til spilleren
+            System.out.println("You have taken the " + item.getLongName());
+        } else {
+            System.out.println("There is no such item in this room.");
+        }
+    }
+
+
+    // Step 4: Vise spillerens inventory
+    public void showInventory() {
+        ArrayList<Item> inventory = adventure.getPlayer().getInventory();
+
+        if (inventory.isEmpty()) {
+            System.out.println("Your inventory is empty.");
+        } else {
+            System.out.println("You are carrying:");
+            for (Item item : inventory) {
+                System.out.println("- " + item.getLongName());
+            }
+        }
+    }
+
+    public void handleDropCommand(String itemName) {
+        // Finder item i spillerens inventory
+        Item item = adventure.getPlayer().findItemInInventory(itemName);
+
+        if (item != null) {
+            // Fjerner item fra spillerens inventory
+            adventure.getPlayer().dropItem(item);
+
+            // Tilføjer item til det nuværende rum
+            adventure.getPlayer().getCurrentRoom().addItem(item);
+
+            // Giv feedback til spilleren
+            System.out.println("You have dropped the " + item.getLongName());
+        } else {
+            System.out.println("You don't have such item in your inventory.");
+        }
+    }
+
 
     // Håndterer ukendte kommandoer fra spilleren
     private void ukendtKommando() {
-        printBesked("Invalid command, try again");
+        System.out.println("Invalid command, try again");
     }
 }

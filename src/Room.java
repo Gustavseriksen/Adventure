@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Room {
 
     // Attributter for ruminformation og forbindelser til andre rum
@@ -7,11 +9,13 @@ public class Room {
     private Room south;
     private Room east;
     private Room west;
+    private ArrayList<Item> items; // Liste af items i rummet
 
-    // Constructor til at initialisere navn og beskrivelse af rummet
+    // Constructor til at initialisere navn, beskrivelse og lave en tom liste til items
     public Room(String name, String description) {
         this.name = name;
         this.description = description;
+        this.items = new ArrayList<>(); // Initialiserer en tom liste til items
     }
 
     // Metoder til at sætte forbindelse til andre rum
@@ -55,5 +59,30 @@ public class Room {
 
     public Room getWest() {
         return west;
+    }
+
+    // Metode til at tilføje et item til rummet
+    public void addItem(Item item) {
+        items.add(item);
+    }
+
+    //Metode til at få listen af items i rummet
+    public ArrayList<Item> getItems() {
+        return items;
+    }
+
+    //Metode til at finde et item i rummet ved hjælp af dets korte navn
+    public Item findItem(String shortName) {
+        for (Item item : items) {
+            if (item.getShortName().equalsIgnoreCase(shortName)) {
+                return item; // Returnerer item hvis det findes
+            }
+        }
+        return null; // Returnerer null hvis det ikke findes
+    }
+
+    // Metode til at fjerne et item fra rummet
+    public void removeItem(Item item) {
+        items.remove(item);
     }
 }

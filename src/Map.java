@@ -2,15 +2,34 @@ public class Map {
     // Metode til at oprette hele kortet og returnere startpositionen
     public Room createMap() {
         // Opretter rummene med navn og beskrivelse
-        Room room1 = new Room("Room 1", "room with no distinct features, except two doors");
-        Room room2 = new Room("Room 2", "room with no distinct features, except two doors");
-        Room room3 = new Room("Room 3", "room with no distinct features, except two doors");
-        Room room4 = new Room("Room 4", "room with no distinct features, except two doors");
-        Room room5 = new Room("Room 5", "room with no distinct features, except one door");
-        Room room6 = new Room("Room 6", "room with no distinct features, except two doors");
-        Room room7 = new Room("Room 7", "room with no distinct features, except two doors");
-        Room room8 = new Room("Room 8", "room with no distinct features, except three doors");
-        Room room9 = new Room("Room 9", "room with no distinct features, except two doors");
+        Room room1 = new Room("Room 1", "room with no distinct features, except two doors. One of the doors go's in the direction of east and the other goes in south.");
+        Room room2 = new Room("Room 2", "room with no distinct features, except two doors. One of the doors go's in the direction of west and the other goes in east.");
+        Room room3 = new Room("Room 3", "room with no distinct features, except two doors. One of the doors go's in the direction of west and the other goes in south.");
+        Room room4 = new Room("Room 4", "room with no distinct features, except two doors. One of the doors go's in the direction of north and the other goes in south.");
+        Room room5 = new Room("Room 5", "room with no distinct features, except one door. The door goes in the direction of south.");
+        Room room6 = new Room("Room 6", "room with no distinct features, except two doors. One of the doors go's in the direction of north and the other goes in south.");
+        Room room7 = new Room("Room 7", "room with no distinct features, except two doors. One of the doors go's in the direction of north and the other goes in east.");
+        Room room8 = new Room("Room 8", "room with no distinct features, except three doors. One of the doors go's in the direction of north and the other goes in west and the last one goes in east.");
+        Room room9 = new Room("Room 9", "room with no distinct features, except two doors. One of the doors go's in the direction of north and the other goes in west.");
+
+        //opretter nogle items
+        Item book = new Item("an ancient book", "book");
+        Item matches = new Item("a cardboard box with matches in it", "matches");
+        Item bottle = new Item("a bottle with liquid inside", "bottle");
+        Item stone = new Item("a stone with engraved ancient text", "stone");
+        Item bucket = new Item("an old rusty bucket","bucket");
+        Item key = new Item("a small golden key", "key");
+
+
+        //Tilføjer items til rummene
+        room2.addItem(book); // Tilføjer book til room2
+        room2.addItem(matches); //Tilføjer matches til room2
+        room3.addItem(bottle); // Tilføjer bottle til room3
+        room3.addItem(stone); // Tilføjer stone til room3
+        room3.addItem(bucket); // Tilføjer bucket til room3
+        room4.addItem(key); // Tilføjer key til room4
+
+
 
         //  Forbinder de rum, der hænger sammen, ved at sætte retninger
         room1.setEast(room2);
