@@ -13,17 +13,19 @@ public class Map {
         Room room9 = new Room("Room 9", "room with no distinct features, except two doors. One of the doors go's in the direction of north and the other goes in west.");
 
         //opretter nogle items
-        Item book = new Item("an ancient book", "book");
-        Item matches = new Item("a cardboard box with matches in it", "matches");
-        Item bottle = new Item("a bottle with liquid inside", "bottle");
-        Item stone = new Item("a stone with engraved ancient text", "stone");
-        Item bucket = new Item("an old rusty bucket","bucket");
-        Item key = new Item("a small golden key", "key");
+        Item book = new Item("ancient book", "book");
+        Item matches = new Item("cardboard box with matches in it", "matches");
+        Item bottle = new Item("bottle with liquid inside", "bottle");
+        Item stone = new Item("stone with engraved ancient text", "stone");
+        Item bucket = new Item("old rusty bucket","bucket");
+        Item key = new Item("small golden key", "key");
+        Food apple = new Food("shiny apple", "apple", 10);
 
 
         //Tilføjer items til rummene
         room2.addItem(book); // Tilføjer book til room2
         room2.addItem(matches); //Tilføjer matches til room2
+        room2.addItem(apple); // Tilføjer apple til room 2
         room3.addItem(bottle); // Tilføjer bottle til room3
         room3.addItem(stone); // Tilføjer stone til room3
         room3.addItem(bucket); // Tilføjer bucket til room3

@@ -3,11 +3,13 @@ import java.util.ArrayList;
 public class Player {
     private ArrayList<Item> inventory; // Liste over items, spilleren bærer rundt på
     private Room currentRoom; // Spilleren holder styr på sit nuværende rum
+    private int health; // Health viser spillerens aktuelle health-status – både som tal og forklarende tekst
 
     // Constructor
     public Player(Room startRoom) {
         this.currentRoom = startRoom; // initialiserer spillerens startposition
         this.inventory = new ArrayList<>(); // initialiserer en tom inventory liste
+        this.health = 100; // initialiserer spillerens health til at være 100 når spillet starter
     }
 
 
@@ -34,6 +36,40 @@ public class Player {
             }
         }
         return null; // Returnerer null hvis det ikke findes
+    }
+
+    public String eat(String itemName) {
+        // Tjekker om maden er i inventory
+        Item item = findItemInInventory(itemName);
+
+        if (item != null) {
+            // Hvis item er fundet i inventory
+            if (item instanceof Food) {
+                Food food = (Food) item;
+                health += food.getHealthPoints();  // Justerer health med madens healthPoints
+                inventory.remove(item);  // Fjerner maden fra inventory permanent
+                return "You have eaten " + food.getLongName() + " and gained " + food.getHealthPoints() + " health.";
+            } else {
+                return "You can't eat " + item.getLongName() + ".";
+            }
+        }
+
+        // Hvis maden ikke er i inventory, tjekker vi rummet
+        item = currentRoom.findItem(itemName);
+
+        if (item != null) {
+            // Hvis item er fundet i rummet
+            if (item instanceof Food) {
+                Food food = (Food) item;
+                health += food.getHealthPoints();  // Justerer health med madens healthPoints
+                currentRoom.removeItem(item);  // Fjerner maden fra rummet permanent
+                return "You have eaten " + food.getLongName() + " and gained " + food.getHealthPoints() + " health.";
+            } else {
+                return "You can't eat " + item.getLongName() + ".";
+            }
+        }
+
+        return "There is no such item to eat.";
     }
 
 
@@ -78,5 +114,17 @@ public class Player {
             return true;
         }
         return false;
+    }
+
+    // Getter-metode for spillerens health
+    public int getHealth() {
+        // Returnerer spillerens nuværende health-værdi
+        return health;
+    }
+
+    // Setter-metode for spillerens health
+    public void setHealth(int health) {
+        // Opdaterer spillerens health med en ny værdi
+        this.health = health;
     }
 }
