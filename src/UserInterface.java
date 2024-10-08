@@ -83,7 +83,18 @@ public class UserInterface {
                     health();
                     break;
                 case "eat":
-                    String result = handleEatCommand(itemName); // Kalder metoden for at spise maden
+                    String result = adventure.getPlayer().eat(itemName); // Bruger Player-klassens eat-metode
+                    System.out.println(result);
+                    break;
+                case "equip":
+                    String equipResult = adventure.getPlayer().equip(itemName);
+                    System.out.println(equipResult);
+                    break;
+                case "unequip":
+                    unequipWeapon();
+                    break;
+                case "attack":
+                    attack();
                     break;
                 default:
                     ukendtKommando(); // Håndterer ukendt kommando
@@ -169,7 +180,10 @@ public class UserInterface {
                 "9. Type \"inventory\": then you will get a list of what you have in your inventory \n" +
                 "10. Type \"drop itemName\": then you gonna drop the following item in the room \n" +
                 "11. Type \"health\": then you see the current health you got\n" +
-                "12. Type \"eat foodName\": then you will eat the following food";
+                "12. Type \"eat foodName\": then you will eat the following food\n" +
+                "13. Type \"equip weaponName\": then you will equip the following weapon\n" +
+                "14. Type \"unequip\": then you will unequip your weapon\n" +
+                "15. Type \"attack\": then you will attack";
     }
 
     // Viser beskrivelsen af det nuværende rum og de items der befinder sig i rummet
@@ -178,44 +192,10 @@ public class UserInterface {
         printItemsInRoom(adventure.getPlayer().getCurrentRoom()); // Udskriver items, ét pr. linje
     }
 
+
     // Udskriver spillerens nuværende health
     private void health() {
         System.out.println("Health: " + adventure.getPlayer().getHealth());
-    }
-
-    // Håndterer når spilleren forsøger at spise et item
-    public String handleEatCommand(String itemName) {
-        // 1. Tjekker om maden er i spillerens inventory
-        Item item = adventure.getPlayer().findItemInInventory(itemName);
-
-        // Hvis item'et findes i inventory
-        if (item != null) { // Tjekker om item'et er af typen Food
-            if (item instanceof Food) {
-                Food food = (Food) item; // Kaster item til Food-typen
-                adventure.getPlayer().setHealth(adventure.getPlayer().getHealth() + food.getHealthPoints()); // Tilføjer health fra maden til spillerens nuværende health
-                adventure.getPlayer().getInventory().remove(item); // Fjerner maden fra inventory, da den er blevet spist
-                System.out.println("You have eaten " + food.getLongName() + " and gained " + food.getHealthPoints() + " health."); // Informerer spilleren om, at de har spist maden og angiver hvor mange health points de har fået
-            } else {
-                System.out.println("You can't eat " + item.getLongName() + "."); // Hvis item'et ikke er mad, informerer spillet spilleren om, at det ikke kan spises
-            }
-        }
-
-        // 2. Tjekker om item'et er i det nuværende rum, hvis det ikke var i inventory
-        item = adventure.getPlayer().getCurrentRoom().findItem(itemName);
-
-        if (item != null) { // Hvis item'et findes i det nuværende rum
-            if (item instanceof Food) { // Tjekker om item'et er af typen Food
-                Food food = (Food) item; // Kaster item til Food-typen
-                adventure.getPlayer().setHealth(adventure.getPlayer().getHealth() + food.getHealthPoints()); // Tilføjer health fra maden til spillerens nuværende health
-                adventure.getPlayer().getCurrentRoom().removeItem(item); // Fjerner maden fra rummet, da den er blevet spist
-                System.out.println("You have eaten " + food.getLongName() + " and gained " + food.getHealthPoints() + " health."); // Informerer spilleren om, at de har spist maden og angiver hvor mange health points de har fået
-            } else {
-                System.out.println("You can't eat " + item.getLongName() + "."); // Hvis item'et ikke er mad, informerer spillet spilleren om, at det ikke kan spises
-            }
-        }
-
-        // 3. Hvis item'et hverken findes i inventory eller i rummet, eller hvis det ikke er spiseligt
-        return "There is no such item to eat.";
     }
 
     // Metode til at håndtere 'take' kommandoen
@@ -259,6 +239,7 @@ public class UserInterface {
     // Step 4: Vise spillerens inventory
     public void showInventory() {
         ArrayList<Item> inventory = adventure.getPlayer().getInventory();
+        Weapon equippedWeapon = adventure.getPlayer().getCurrentWeapon(); // Henter det udstyrede våben
 
         if (inventory.isEmpty()) {
             System.out.println("Your inventory is empty.");
@@ -267,6 +248,36 @@ public class UserInterface {
             for (Item item : inventory) {
                 System.out.println("- " + item.getLongName());
             }
+        }
+
+        if (equippedWeapon.isUnlimitedUses()) {
+            System.out.println("Currently equipped weapon: " + equippedWeapon.getLongName());
+        } else {
+            System.out.println("Currently equipped weapon: " + equippedWeapon.getLongName() + "\n" + "Ammo: " + equippedWeapon.remainingUses());
+        }
+
+    }
+
+
+    private void attack() {
+        Weapon attackWeapon = adventure.getPlayer().getCurrentWeapon(); // Henter det udstyrede våben
+
+        if (attackWeapon == null) {
+            System.out.println("You have attacked with your bare hands");
+            return;
+        } else {
+            // Kalder attack-metoden på weapon-objektet, som leverer den rigtige besked
+            System.out.println(attackWeapon.attack());
+
+        }
+    }
+
+    private void unequipWeapon() {
+        if (adventure.getPlayer().getCurrentWeapon() == null) {
+            System.out.println("You have no weapon equipped to unequip.");
+        } else {
+            adventure.getPlayer().unequip();
+            System.out.println("You have unequipped your weapon");
         }
     }
 

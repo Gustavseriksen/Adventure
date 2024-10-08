@@ -4,12 +4,14 @@ public class Player {
     private ArrayList<Item> inventory; // Liste over items, spilleren bærer rundt på
     private Room currentRoom; // Spilleren holder styr på sit nuværende rum
     private int health; // Health viser spillerens aktuelle health-status – både som tal og forklarende tekst
+    private Weapon currentWeapon; // Holder styr på hvilket våben spilleren har equipped
 
     // Constructor
     public Player(Room startRoom) {
         this.currentRoom = startRoom; // initialiserer spillerens startposition
         this.inventory = new ArrayList<>(); // initialiserer en tom inventory liste
         this.health = 100; // initialiserer spillerens health til at være 100 når spillet starter
+        this.currentWeapon = null; // Spilleren starter uden et våben udstyret
     }
 
 
@@ -37,6 +39,24 @@ public class Player {
         }
         return null; // Returnerer null hvis det ikke findes
     }
+
+    public String equip(String itemName) {
+        //Tjekker om våbenet er i inventory
+        Item item = findItemInInventory(itemName);
+
+        if (item != null) {
+            // Hvis item er fundet i inventory
+            if (item instanceof Weapon) {
+                Weapon weapon = (Weapon) item;
+                currentWeapon = weapon; //Våbnet tilføjes til currentWeapon og er hermed equipped
+                return "You have equipped " + weapon.getLongName();
+            } else {
+                return "You can't equip " + item.getLongName() + " it is not a weapon.";
+            }
+        }
+        return "There is no such weapon to equip.";
+    }
+
 
     public String eat(String itemName) {
         // Tjekker om maden er i inventory
@@ -126,5 +146,16 @@ public class Player {
     public void setHealth(int health) {
         // Opdaterer spillerens health med en ny værdi
         this.health = health;
+    }
+
+    // Getter-metode for currentWeapon
+    public Weapon getCurrentWeapon() {
+        // Returnerer spillerens nuværende equipped weapon
+        return currentWeapon;
+    }
+
+    // Metode til at unequip weapon
+    public void unequip() {
+        currentWeapon = null;
     }
 }

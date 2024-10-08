@@ -20,9 +20,13 @@ public class Map {
         Item bucket = new Item("old rusty bucket","bucket");
         Item key = new Item("small golden key", "key");
         Food apple = new Food("shiny apple", "apple", 10);
+        MeleeWeapon sword = new MeleeWeapon("shiny silver sword", "sword");
+        RangedWeapon rifle = new RangedWeapon("rusty rifle", "rifle", 20);
 
 
         //Tilføjer items til rummene
+        room1.addItem(rifle);
+        room1.addItem(sword);
         room2.addItem(book); // Tilføjer book til room2
         room2.addItem(matches); //Tilføjer matches til room2
         room2.addItem(apple); // Tilføjer apple til room 2
@@ -30,6 +34,7 @@ public class Map {
         room3.addItem(stone); // Tilføjer stone til room3
         room3.addItem(bucket); // Tilføjer bucket til room3
         room4.addItem(key); // Tilføjer key til room4
+
 
 
 
