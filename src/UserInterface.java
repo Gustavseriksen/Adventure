@@ -18,7 +18,10 @@ public class UserInterface {
         running = true; // Sætter running til true for at starte spillet
 
         // Udskriver introduktion til spillet og instruktioner til spilleren
-        System.out.println("Welcome to Adventure \nthis is a text based game… a bit about how the game works… ");
+        System.out.println("Welcome to Adventure!\n" +
+                "Explore mysterious rooms, collect items, and fight enemies.\n" +
+                "Use commands to move, take items, and attack as you uncover secrets.\n" +
+                "Good luck on your journey!");
         System.out.println("You are starting in a " + adventure.getPlayer().getCurrentRoom().getDescription()); // Udskriver beskrivelsen af det nuværende rum
         printItemsInRoom(adventure.getPlayer().getCurrentRoom()); // Udskriver items, ét pr. linje
         printEnemiesInRoom(adventure.getPlayer().getCurrentRoom()); //Udskriver enemies, en pr. linje
@@ -187,21 +190,21 @@ public class UserInterface {
     // Viser hjælpemenuen
     private String getHelpDescription() {
         return "You have the following options: \n" +
-                "1. Type \"go north\": then you will go north \n" +
-                "2. Type \"go east\": then you will go east \n" +
-                "3. Type \"go south\": then you will go south \n" +
-                "4. Type \"go west\": then you will go west \n" +
-                "5. Type \"exit\": then you will exit the game \n" +
-                "6. Type \"help\": then you will get the following options \n" +
-                "7. Type \"look\": then you will get a description of what you can see in the room \n" +
-                "8. Type \"take itemName\": then you will take the following item and put it in your inventory \n" +
-                "9. Type \"inventory\": then you will get a list of what you have in your inventory \n" +
-                "10. Type \"drop itemName\": then you gonna drop the following item in the room \n" +
-                "11. Type \"health\": then you see the current health you got\n" +
-                "12. Type \"eat foodName\": then you will eat the following food\n" +
-                "13. Type \"equip weaponName\": then you will equip the following weapon\n" +
-                "14. Type \"unequip\": then you will unequip your weapon\n" +
-                "15. Type \"attack\": then you will attack";
+                "1. Type \"go north\": Move north \n" +
+                "2. Type \"go east\": Move east \n" +
+                "3. Type \"go south\": Move south \n" +
+                "4. Type \"go west\": Move west \n" +
+                "5. Type \"exit\": Exit the game \n" +
+                "6. Type \"help\": Show this menu \n" +
+                "7. Type \"look\": Describes the room \n" +
+                "8. Type \"take itemName\": Take an item \n" +
+                "9. Type \"inventory\": Show your items \n" +
+                "10. Type \"drop itemName\": Drop an item \n" +
+                "11. Type \"health\": Show your health \n" +
+                "12. Type \"eat foodName\": Eat food \n" +
+                "13. Type \"equip weaponName\": Equip a weapon \n" +
+                "14. Type \"unequip\": Unequip your weapon \n" +
+                "15. Type \"attack\": Attack an enemy";
     }
 
     // Viser beskrivelsen af det nuværende rum og de items der befinder sig i rummet
