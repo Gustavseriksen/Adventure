@@ -21,6 +21,7 @@ public class UserInterface {
         System.out.println("Welcome to Adventure \nthis is a text based game… a bit about how the game works… ");
         System.out.println("You are starting in a " + adventure.getPlayer().getCurrentRoom().getDescription()); // Udskriver beskrivelsen af det nuværende rum
         printItemsInRoom(adventure.getPlayer().getCurrentRoom()); // Udskriver items, ét pr. linje
+        printEnemiesInRoom(adventure.getPlayer().getCurrentRoom()); //Udskriver enemies, en pr. linje
         System.out.println(getHelpDescription()); // Udskriver hjælpemenuen
 
         // Hovedloopet for spillet, kører indtil running bliver sat til false
@@ -94,7 +95,8 @@ public class UserInterface {
                     unequipWeapon();
                     break;
                 case "attack":
-                    attack();
+                    String attackResult = adventure.getPlayer().attack(itemName); // Kalder attack med itemName som parameter
+                    System.out.println(attackResult);
                     break;
                 default:
                     ukendtKommando(); // Håndterer ukendt kommando
@@ -116,12 +118,25 @@ public class UserInterface {
         }
     }
 
+    // Hjælpefunktion til at udskrive items i rummet, én pr. linje
+    private void printEnemiesInRoom(Room room) {
+        if (room.getEnemies().isEmpty()) {
+            System.out.println("There are no enemies in this room.");
+        } else {
+            System.out.println("enemies in this room:");
+            for (Enemy enemy : room.getEnemies()) {
+                System.out.println("- " + enemy.getName() + " Health: " + enemy.getHealth() + " Damage: " + enemy.getCurrentWeapon().damage());
+            }
+        }
+    }
+
     // Spilleren forsøger at bevæge sig nord
     private void goNorth() {
         // Tjekker om spilleren kan bevæge sig nord og opdaterer positionen
         if (adventure.getPlayer().moveNorth()) {
             System.out.println("You are now in a " + adventure.getPlayer().getCurrentRoom().getDescription());
             printItemsInRoom(adventure.getPlayer().getCurrentRoom()); // Udskriver items, ét pr. linje
+            printEnemiesInRoom(adventure.getPlayer().getCurrentRoom()); //Udskriver enemies, en pr. linje
         } else {
             System.out.println("You cannot go that way.");
         }
@@ -133,6 +148,7 @@ public class UserInterface {
         if (adventure.getPlayer().moveEast()) {
             System.out.println("You are now in a " + adventure.getPlayer().getCurrentRoom().getDescription());
             printItemsInRoom(adventure.getPlayer().getCurrentRoom()); // Udskriver items, ét pr. linje
+            printEnemiesInRoom(adventure.getPlayer().getCurrentRoom()); //Udskriver enemies, en pr. linje
         } else {
             System.out.println("You cannot go that way.");
         }
@@ -144,6 +160,7 @@ public class UserInterface {
         if (adventure.getPlayer().moveSouth()) {
             System.out.println("You are now in a " + adventure.getPlayer().getCurrentRoom().getDescription());
             printItemsInRoom(adventure.getPlayer().getCurrentRoom()); // Udskriver items, ét pr. linje
+            printEnemiesInRoom(adventure.getPlayer().getCurrentRoom()); //Udskriver enemies, en pr. linje
         } else {
             System.out.println("You cannot go that way.");
         }
@@ -155,6 +172,7 @@ public class UserInterface {
         if (adventure.getPlayer().moveWest()) {
             System.out.println("You are now in a " + adventure.getPlayer().getCurrentRoom().getDescription());
             printItemsInRoom(adventure.getPlayer().getCurrentRoom()); // Udskriver items, ét pr. linje
+            printEnemiesInRoom(adventure.getPlayer().getCurrentRoom()); //Udskriver enemies, en pr. linje
         } else {
             System.out.println("You cannot go that way.");
         }
@@ -190,6 +208,7 @@ public class UserInterface {
     private void look() {
         System.out.println(adventure.getPlayer().getCurrentRoom().getDescription());
         printItemsInRoom(adventure.getPlayer().getCurrentRoom()); // Udskriver items, ét pr. linje
+        printEnemiesInRoom(adventure.getPlayer().getCurrentRoom()); //Udskriver enemies, en pr. linje
     }
 
 
@@ -250,25 +269,15 @@ public class UserInterface {
             }
         }
 
-        if (equippedWeapon.isUnlimitedUses()) {
-            System.out.println("Currently equipped weapon: " + equippedWeapon.getLongName());
+
+        if (equippedWeapon != null) {
+            if (equippedWeapon.isUnlimitedUses()) {
+                System.out.println("Currently equipped weapon: " + equippedWeapon.getLongName());
+            } else {
+                System.out.println("Currently equipped weapon: " + equippedWeapon.getLongName() + "\n" + "Ammo: " + equippedWeapon.remainingUses());
+            }
         } else {
-            System.out.println("Currently equipped weapon: " + equippedWeapon.getLongName() + "\n" + "Ammo: " + equippedWeapon.remainingUses());
-        }
-
-    }
-
-
-    private void attack() {
-        Weapon attackWeapon = adventure.getPlayer().getCurrentWeapon(); // Henter det udstyrede våben
-
-        if (attackWeapon == null) {
-            System.out.println("You have attacked with your bare hands");
-            return;
-        } else {
-            // Kalder attack-metoden på weapon-objektet, som leverer den rigtige besked
-            System.out.println(attackWeapon.attack());
-
+            System.out.println("You have no weapon equipped.");
         }
     }
 

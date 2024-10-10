@@ -20,8 +20,8 @@ public class Map {
         Item bucket = new Item("old rusty bucket","bucket");
         Item key = new Item("small golden key", "key");
         Food apple = new Food("shiny apple", "apple", 10);
-        MeleeWeapon sword = new MeleeWeapon("shiny silver sword", "sword");
-        RangedWeapon rifle = new RangedWeapon("rusty rifle", "rifle", 20);
+        MeleeWeapon sword = new MeleeWeapon("shiny silver sword", "sword", 5);
+        RangedWeapon rifle = new RangedWeapon("rusty rifle", "rifle", 20, 10);
 
 
         //Tilføjer items til rummene
@@ -34,6 +34,17 @@ public class Map {
         room3.addItem(stone); // Tilføjer stone til room3
         room3.addItem(bucket); // Tilføjer bucket til room3
         room4.addItem(key); // Tilføjer key til room4
+
+
+        //Opretter enemies
+        Enemy goblin = new Enemy("goblin", "green goblin", 25, sword);
+        Enemy human = new Enemy("human", "evil human", 30, sword);
+
+
+
+        //Tilføjer enemies til rummene
+        room4.addEnemy(goblin);
+        room4.addEnemy(human);
 
 
 

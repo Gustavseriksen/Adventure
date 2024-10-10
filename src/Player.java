@@ -6,6 +6,11 @@ public class Player {
     private int health; // Health viser spillerens aktuelle health-status – både som tal og forklarende tekst
     private Weapon currentWeapon; // Holder styr på hvilket våben spilleren har equipped
 
+
+    private void hit (int damage) {
+        health -=damage;
+    }
+
     // Constructor
     public Player(Room startRoom) {
         this.currentRoom = startRoom; // initialiserer spillerens startposition
@@ -39,6 +44,47 @@ public class Player {
         }
         return null; // Returnerer null hvis det ikke findes
     }
+
+    public String attack(String enemyName) {
+        Weapon weapon = getCurrentWeapon();
+        Room currentRoom = getCurrentRoom();
+        Enemy enemy = enemyName.isEmpty() ? currentRoom.getEnemies().get(0) : currentRoom.findEnemy(enemyName);
+
+        if (weapon == null) {
+            return "You don't have any weapon equipped.";
+        }
+        if (weapon.remainingUses() == 0) {
+            return "Your weapon has no ammunition left.";
+        }
+        if (enemy == null) {
+            return "There are no enemies to attack here.";
+        }
+
+        // Angrib fjenden
+        int damage = weapon.damage();
+        enemy.hit(damage);
+
+        // Reducere ammunition for RangedWeapon
+        if (weapon instanceof RangedWeapon) {
+            ((RangedWeapon) weapon).attack();
+        }
+
+        // Check om fjenden døde
+        if (enemy.getHealth() <= 0) {
+            currentRoom.removeEnemy(enemy);
+            currentRoom.addItem(enemy.getCurrentWeapon()); // Fjenden dropper våbenet
+            return "You defeated the " + enemy.getName() + " and it dropped a " + enemy.getCurrentWeapon().getLongName();
+        }
+
+        // Fjendens modangreb
+        int enemyDamage = enemy.getCurrentWeapon().damage();
+        this.hit(enemyDamage);
+
+        return "You attacked the " + enemy.getName() + " with " + damage + " damage. The " + enemy.getName() + " remaining health is now " + enemy.getHealth() + "." +
+               "The " + enemy.getName() + " attacked back with " + enemyDamage + " damage. Your health is now " + this.getHealth();
+    }
+
+
 
     public String equip(String itemName) {
         //Tjekker om våbenet er i inventory

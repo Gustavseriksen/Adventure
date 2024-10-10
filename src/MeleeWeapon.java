@@ -1,6 +1,6 @@
 public class MeleeWeapon extends Weapon{
-    public MeleeWeapon(String longName, String shortName) {
-        super(longName, shortName, -1); // Sætter remainingUses til -1 for ubegrænsede anvendelser
+    public MeleeWeapon(String longName, String shortName, int damage) {
+        super(longName, shortName, -1, damage); // Sætter remainingUses til -1 for ubegrænsede anvendelser
     }
 
     @Override

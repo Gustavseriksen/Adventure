@@ -1,6 +1,6 @@
 public class RangedWeapon extends Weapon {
-    public RangedWeapon(String longName, String shortName, int remainingUses) {
-        super(longName, shortName, remainingUses);
+    public RangedWeapon(String longName, String shortName, int remainingUses, int damage) {
+        super(longName, shortName, remainingUses, damage);
     }
 
     @Override
