@@ -46,40 +46,57 @@ public class Player {
     }
 
     public String attack(String enemyName) {
-        Weapon weapon = getCurrentWeapon();
-        Room currentRoom = getCurrentRoom();
-        Enemy enemy = enemyName.isEmpty() ? currentRoom.getEnemies().get(0) : currentRoom.findEnemy(enemyName);
+        Weapon weapon = getCurrentWeapon(); // Henter det nuværende udstyrede våben
+        Room currentRoom = getCurrentRoom(); // Henter spillerens nuværende rum
+        // Finder fjenden enten baseret på enemyName eller den første fjende i rummet
+        Enemy enemy;
+        if (enemyName.isEmpty()) {
+            // Hvis enemyName er tomt, vælger vi den første fjende i rummet
+            enemy = currentRoom.getEnemies().get(0);
+        } else {
+            // Ellers finder vi fjenden baseret på navnet
+            enemy = currentRoom.findEnemy(enemyName);
+        }
 
+        // Tjekker om spilleren har et våben udstyret
         if (weapon == null) {
             return "You don't have any weapon equipped.";
         }
+        // Tjekker om våbnet har ammunition tilbage
         if (weapon.remainingUses() == 0) {
             return "Your weapon has no ammunition left.";
         }
+        // Tjekker om der er en gyldig fjende at angribe
         if (enemy == null) {
             return "There are no enemies to attack here.";
         }
 
-        // Angrib fjenden
+        // Angriber fjenden og reducerer fjendens helbred
         int damage = weapon.damage();
         enemy.hit(damage);
 
-        // Reducere ammunition for RangedWeapon
+        // Hvis våbnet er af typen RangedWeapon, reduceres ammunitionen
         if (weapon instanceof RangedWeapon) {
             ((RangedWeapon) weapon).attack();
         }
 
         // Check om fjenden døde
         if (enemy.getHealth() <= 0) {
+            // Hvis fjendens helbred er 0 eller lavere, fjernes fjenden fra rummet
             currentRoom.removeEnemy(enemy);
-            currentRoom.addItem(enemy.getCurrentWeapon()); // Fjenden dropper våbenet
+            // Fjenden dropper sit våben i rummet
+            currentRoom.addItem(enemy.getCurrentWeapon());
+            // Returnerer en besked om, at fjenden er besejret, og hvilket våben der blev droppet
             return "You defeated the " + enemy.getName() + " and it dropped a " + enemy.getCurrentWeapon().getLongName();
         }
 
         // Fjendens modangreb
+        // Henter fjendens våben og fastsætter hvor meget skade fjenden påfører
         int enemyDamage = enemy.getCurrentWeapon().damage();
+        // Spilleren tager skade fra fjendens angreb
         this.hit(enemyDamage);
 
+        // Returnerer en besked om skaden spilleren påførte fjenden, fjendens resterende helbred, fjendens modangreb og spillerens nuværende helbred
         return "You attacked the " + enemy.getName() + " with " + damage + " damage. The " + enemy.getName() + " remaining health is now " + enemy.getHealth() + "." +
                "The " + enemy.getName() + " attacked back with " + enemyDamage + " damage. Your health is now " + this.getHealth();
     }
